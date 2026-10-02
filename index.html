@@ -1,275 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SmartSustain India — Facility Intelligence</title>
+  <title>SmartSustain AI | Institutional Operations Platform</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-    /* Hide dashboard initially */
-    #dashboard { display: none; }
+    body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; overflow-x: hidden; }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    
+    /* Map Animations */
+    .pulse-dot { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(1.5); } }
+    
+    /* Range Slider Styling */
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #10b981; cursor: pointer; margin-top: -6px; }
+    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #334155; border-radius: 2px; }
   </style>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
-
-  <!-- ================= LOGIN PAGE ================= -->
-  <div id="loginPage" class="flex-grow flex items-center justify-center p-6">
-    <div class="bg-slate-800/80 border border-slate-700 p-8 rounded-2xl shadow-2xl max-w-md w-full">
-      <div class="text-center mb-8">
-        <div class="h-16 w-16 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-3xl mb-4">
-          <i class="fa-solid fa-leaf"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-white">SmartSustain AI</h2>
-        <p class="text-sm text-slate-400 mt-1">Facility Intelligence Platform</p>
-      </div>
-      
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Administrator ID</label>
-          <input type="text" value="admin" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500" />
-        </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Password</label>
-          <input type="password" value="hackathon2024" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-emerald-500" />
-        </div>
-        <button onclick="performLogin()" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-lg transition shadow-lg">
-          Secure Login <i class="fa-solid fa-arrow-right ml-2"></i>
-        </button>
-      </div>
-      <div class="mt-6 text-center text-xs text-slate-500">
-        BPUT Hackathon Prototype Demo
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= DASHBOARD PAGE ================= -->
-  <div id="dashboard" class="w-full pb-10">
-    <!-- Top Navigation Bar -->
-    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-30 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="h-10 w-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-xl">
-          <i class="fa-solid fa-leaf"></i>
-        </div>
-        <div>
-          <h1 class="text-lg font-bold text-white tracking-wide">SmartSustain AI</h1>
-          <p class="text-xs text-slate-400">Institutional Decision-Support Platform</p>
-        </div>
-      </div>
-
-      <!-- Controls: Campus Selector & Role Toggle -->
-      <div class="flex flex-wrap items-center gap-3">
-        <div class="flex items-center gap-2 bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs">
-          <i class="fa-solid fa-building text-slate-400"></i>
-          <select id="facilitySelect" class="bg-transparent text-slate-200 outline-none cursor-pointer font-medium" onchange="updateFacility()">
-            <option value="bput" class="bg-slate-900">BPUT Campus, Rourkela</option>
-            <option value="hospital" class="bg-slate-900">SCB Government Hospital</option>
-            <option value="industrial" class="bg-slate-900">IDCO Industrial Estate</option>
-          </select>
-        </div>
-
-        <button onclick="logout()" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/30 text-xs hover:bg-rose-500/20 transition">
-          Logout
-        </button>
-      </div>
-    </header>
-
-    <!-- Main Body Content -->
-    <main class="max-w-7xl mx-auto p-6 space-y-6">
-
-      <!-- KPI Metric Cards Grid (Expanded from PDF requirements) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-        
-        <!-- Air Quality & Temp -->
-        <div class="bg-slate-800/60 border border-slate-700/70 p-4 rounded-xl shadow-lg">
-          <div class="text-xs text-slate-400 mb-1 flex justify-between"><i class="fa-solid fa-wind text-amber-400"></i> AQI & Climate</div>
-          <div class="flex items-baseline gap-2">
-            <span id="kpiAqi" class="text-2xl font-bold text-amber-400">148</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300">Mod</span>
-          </div>
-          <div class="mt-2 text-[11px] text-slate-400">Temp: <strong class="text-slate-200">32°C</strong> | Hum: <strong class="text-slate-200">68%</strong></div>
-        </div>
-
-        <!-- Energy -->
-        <div class="bg-slate-800/60 border border-slate-700/70 p-4 rounded-xl shadow-lg">
-          <div class="text-xs text-slate-400 mb-1 flex justify-between"><i class="fa-solid fa-bolt text-yellow-400"></i> Energy Demand</div>
-          <div class="flex items-baseline gap-2">
-            <span id="kpiEnergy" class="text-2xl font-bold text-white">4.2</span>
-            <span class="text-[10px] text-slate-400">MWh</span>
-          </div>
-          <div class="mt-2 text-[11px] text-emerald-400"><i class="fa-solid fa-arrow-down"></i> 11% vs Baseline</div>
-        </div>
-
-        <!-- Waste -->
-        <div class="bg-slate-800/60 border border-slate-700/70 p-4 rounded-xl shadow-lg">
-          <div class="text-xs text-slate-400 mb-1 flex justify-between"><i class="fa-solid fa-trash-can text-rose-400"></i> Waste Bins</div>
-          <div class="flex items-baseline gap-2">
-            <span id="kpiWaste" class="text-2xl font-bold text-rose-400">82%</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300">Full</span>
-          </div>
-          <div class="mt-2 text-[11px] text-rose-400">2 Bins Near Overflow</div>
-        </div>
-
-        <!-- Water -->
-        <div class="bg-slate-800/60 border border-slate-700/70 p-4 rounded-xl shadow-lg">
-          <div class="text-xs text-slate-400 mb-1 flex justify-between"><i class="fa-solid fa-droplet text-cyan-400"></i> Water Usage</div>
-          <div class="flex items-baseline gap-2">
-            <span id="kpiWater" class="text-2xl font-bold text-cyan-400">14.8</span>
-            <span class="text-[10px] text-slate-400">kL</span>
-          </div>
-          <div class="mt-2 text-[11px] text-emerald-400">0 Leak Anomalies</div>
-        </div>
-
-        <!-- Traffic Flow (New) -->
-        <div class="bg-slate-800/60 border border-slate-700/70 p-4 rounded-xl shadow-lg">
-          <div class="text-xs text-slate-400 mb-1 flex justify-between"><i class="fa-solid fa-car text-purple-400"></i> Traffic Flow</div>
-          <div class="flex items-baseline gap-2">
-            <span class="text-2xl font-bold text-purple-400">High</span>
-          </div>
-          <div class="mt-2 text-[11px] text-purple-300">Main Gate Congestion</div>
-        </div>
-
-        <!-- Safety/Assets (New) -->
-        <div class="bg-slate-800/60 border border-slate-700/70 p-4 rounded-xl shadow-lg">
-          <div class="text-xs text-slate-400 mb-1 flex justify-between"><i class="fa-solid fa-shield-halved text-blue-400"></i> Safety Incidents</div>
-          <div class="flex items-baseline gap-2">
-            <span class="text-2xl font-bold text-blue-400">0</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300">Clear</span>
-          </div>
-          <div class="mt-2 text-[11px] text-slate-400">All Zones Secure</div>
-        </div>
-
-      </div>
-
-      <!-- Main Charts Section -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Chart 1: Air Quality Trends -->
-        <div class="bg-slate-800/60 border border-slate-700/70 p-5 rounded-2xl shadow-lg">
-          <h3 class="font-semibold text-sm text-white mb-4">AQI Trend & Anomaly Detection</h3>
-          <div class="relative h-64"><canvas id="aqiChart"></canvas></div>
-        </div>
-
-        <!-- AI Action Recommendations -->
-        <div class="bg-slate-800/60 border border-slate-700/70 p-5 rounded-2xl shadow-lg space-y-4">
-          <div class="flex items-center gap-2 mb-4">
-            <i class="fa-solid fa-microchip text-emerald-400"></i>
-            <h3 class="font-semibold text-sm text-white">Live Action Recommendations</h3>
-          </div>
-
-          <!-- Action Item 1 -->
-          <div class="p-4 bg-slate-900/80 border-l-4 border-amber-500 rounded-r-xl border border-slate-700/50 flex justify-between items-center gap-3">
-            <div>
-              <h4 class="text-sm font-semibold text-slate-100">Throttle HVAC Intake at 4:30 PM</h4>
-              <p class="text-xs text-slate-400 mt-1">Traffic forecast predicts high PM2.5 emissions near Main Gate.</p>
-            </div>
-            <button id="actBtn1" onclick="dispatchAction('actBtn1', 'HVAC Adjusted')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded text-xs font-medium">Accept</button>
-          </div>
-
-          <!-- Action Item 2 -->
-          <div class="p-4 bg-slate-900/80 border-l-4 border-rose-500 rounded-r-xl border border-slate-700/50 flex justify-between items-center gap-3">
-            <div>
-              <h4 class="text-sm font-semibold text-slate-100">Re-route Sanitation Team</h4>
-              <p class="text-xs text-slate-400 mt-1">Zone B bins will overflow in 2.5 hours. Send team now.</p>
-            </div>
-            <button id="actBtn2" onclick="dispatchAction('actBtn2', 'Route Updated')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded text-xs font-medium">Accept</button>
-          </div>
-        </div>
-      </div>
-
-    </main>
-  </div>
-
   <script>
-    let chartsInitialized = false;
-
-    // Login Function - Hides login page, shows dashboard, renders charts
-    function performLogin() {
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      
-      if (!chartsInitialized) {
-        initCharts();
-        chartsInitialized = true;
-      }
-    }
-
-    // Logout Function
-    function logout() {
-      document.getElementById('dashboard').style.display = 'none';
-      document.getElementById('loginPage').style.display = 'flex';
-    }
-
-    // Initialize Charts only after dashboard is visible
-    function initCharts() {
-      const aqiCtx = document.getElementById('aqiChart').getContext('2d');
-      new Chart(aqiCtx, {
-        type: 'line',
-        data: {
-          labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-          datasets: [
-            {
-              label: 'AQI Level',
-              data: [92, 105, 138, 120, 178, 142],
-              borderColor: '#fbbf24',
-              backgroundColor: 'rgba(251, 191, 36, 0.1)',
-              fill: true,
-              tension: 0.4,
-              borderWidth: 2
-            },
-            {
-              label: 'Safe Limit',
-              data: [100, 100, 100, 100, 100, 100],
-              borderColor: 'rgba(16, 185, 129, 0.6)',
-              borderDash: [5, 5],
-              fill: false,
-              borderWidth: 1.5,
-              pointRadius: 0
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
-          scales: {
-            x: { grid: { color: 'rgba(51, 65, 85, 0.3)' }, ticks: { color: '#94a3b8' } },
-            y: { grid: { color: 'rgba(51, 65, 85, 0.3)' }, ticks: { color: '#94a3b8' } }
-          }
-        }
-      });
-    }
-
-    // Facility switcher interactive handler
-    function updateFacility() {
-      const type = document.getElementById('facilitySelect').value;
-      if (type === 'hospital') {
-        document.getElementById('kpiAqi').innerText = '112';
-        document.getElementById('kpiEnergy').innerText = '6.4';
-        document.getElementById('kpiWaste').innerText = '94%';
-        document.getElementById('kpiWater').innerText = '28.4';
-      } else if (type === 'industrial') {
-        document.getElementById('kpiAqi').innerText = '198';
-        document.getElementById('kpiEnergy').innerText = '12.8';
-        document.getElementById('kpiWaste').innerText = '65%';
-        document.getElementById('kpiWater').innerText = '42.0';
-      } else {
-        document.getElementById('kpiAqi').innerText = '148';
-        document.getElementById('kpiEnergy').innerText = '4.2';
-        document.getElementById('kpiWaste').innerText = '82%';
-        document.getElementById('kpiWater').innerText = '14.8';
-      }
-    }
-
-    // Interactive action dispatcher
-    function dispatchAction(buttonId, successText) {
-      const btn = document.getElementById(buttonId);
-      btn.innerText = '✓ ' + successText;
-      btn.className = 'px-3 py-1.5 bg-slate-700 text-emerald-400 border border-emerald-500/50 rounded text-xs font-medium cursor-default';
-      btn.disabled = true;
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { slate: { 850: '#151f32', 950: '#020617' } } } }
     }
   </script>
-</body>
-</html>
+</head>
+<body class="flex h-screen overflow-hidden antialiased">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-slate-950 border-r border-slate-800 flex flex-col hidden md:flex">
+    <div class="h-16 flex items-center px-6 border-b border-slate-800">
+      <div class="h-8 w-8 rounded bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 mr-3">
+        <i class="fa-solid fa-layer-group"></i>
+      </div>
+      <span class="font-bold text-lg tracking-tight">SmartSustain <span class="text-emerald-500">AI</span></span>
+    </div>
+    
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+      <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-emerald-500/10 text-emerald-400">
+        <i class="fa-solid fa-chart-line w-6"></i> Dashboard
+      </a>
+      <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+        <i class="fa-solid fa-map-location-dot w-6"></i> Live Map
+      </a>
+      <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+        <i class="fa-solid fa-brain w-6"></i> AI Insights
+      </a>
+      <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+        <i class="fa-solid fa-leaf w-6"></i> Sustainability
+      </a>
+      <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+        <i class="fa-solid fa-bolt w-6"></i> Operations
+      </a>
+      <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition justify-between">
+        <div class="flex items-center"><i class="fa-solid fa-bell w-6"></i> Alerts</div>
+        <span class="bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">2</span>
+      </a>
+      <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/5
