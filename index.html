@@ -66,4 +66,430 @@
         <div class="flex items-center"><i class="fa-solid fa-bell w-6"></i> Alerts</div>
         <span class="bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">2</span>
       </a>
-      <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/5
+      <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+        <i class="fa-solid fa-file-contract w-6"></i> Reports
+      </a>
+    </nav>
+    
+    <div class="p-4 border-t border-slate-800">
+      <div class="bg-slate-900 rounded-lg p-3 border border-slate-800">
+        <div class="text-xs text-slate-400 mb-1">System Status</div>
+        <div class="flex items-center text-sm font-medium text-emerald-400">
+          <span class="relative flex h-2.5 w-2.5 mr-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          AI Engine Online
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col min-w-0 bg-[#0b1121]">
+    
+    <!-- Top Header -->
+    <header class="h-16 px-6 border-b border-slate-800 bg-slate-950/50 backdrop-blur flex items-center justify-between sticky top-0 z-20">
+      <div>
+        <h1 class="text-lg font-bold">Smart Facility Intelligence</h1>
+        <p class="text-xs text-slate-400">Turn real-time facility data into actionable decisions.</p>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <div class="bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-1.5 flex items-center gap-2">
+          <i class="fa-solid fa-building text-slate-400 text-sm"></i>
+          <select id="facilitySelect" class="bg-transparent text-sm font-medium text-slate-200 outline-none cursor-pointer" onchange="changeFacility()">
+            <option value="smart_campus" class="bg-slate-900">Engineering Campus (BPUT)</option>
+            <option value="hospital" class="bg-slate-900">Government Hospital</option>
+            <option value="industrial" class="bg-slate-900">Industrial Estate</option>
+          </select>
+        </div>
+        
+        <button onclick="generateReport()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-sm font-medium px-4 py-1.5 rounded-lg transition flex items-center gap-2">
+          <i class="fa-solid fa-download"></i> Export Report
+        </button>
+      </div>
+    </header>
+
+    <!-- Scrollable Content -->
+    <div class="flex-1 overflow-y-auto p-6">
+      
+      <!-- KPIs Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        
+        <!-- Air Quality -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 relative overflow-hidden">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-slate-400 text-xs font-medium uppercase tracking-wider">Air Quality Index</span>
+            <i class="fa-solid fa-wind text-amber-500"></i>
+          </div>
+          <div class="flex items-end gap-2">
+            <h2 id="val_aqi" class="text-3xl font-bold text-slate-100">118</h2>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 mb-1">Moderate</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-2">PM2.5: <span id="val_pm25">42</span>µg/m³ | Temp: 28°C</p>
+          <div class="absolute bottom-0 left-0 h-1 bg-amber-500 w-full opacity-75"></div>
+        </div>
+
+        <!-- Energy -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 relative overflow-hidden">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-slate-400 text-xs font-medium uppercase tracking-wider">Energy Demand</span>
+            <i class="fa-solid fa-bolt text-cyan-400"></i>
+          </div>
+          <div class="flex items-end gap-2">
+            <h2 id="val_energy" class="text-3xl font-bold text-slate-100">12.8</h2>
+            <span class="text-sm text-slate-400 mb-1">MWh</span>
+          </div>
+          <div class="flex items-center gap-1 mt-2 text-xs">
+            <span class="text-emerald-400"><i class="fa-solid fa-arrow-down"></i> 4.2%</span>
+            <span class="text-slate-400">vs baseline. Save opp: ₹12K</span>
+          </div>
+          <div class="absolute bottom-0 left-0 h-1 bg-cyan-500 w-full opacity-75"></div>
+        </div>
+
+        <!-- Water -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 relative overflow-hidden">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-slate-400 text-xs font-medium uppercase tracking-wider">Water Usage</span>
+            <i class="fa-solid fa-droplet text-blue-400"></i>
+          </div>
+          <div class="flex items-end gap-2">
+            <h2 id="val_water" class="text-3xl font-bold text-slate-100">42.5</h2>
+            <span class="text-sm text-slate-400 mb-1">kL</span>
+          </div>
+          <p class="text-xs text-rose-400 mt-2 font-medium"><i class="fa-solid fa-triangle-exclamation"></i> Abnormal use detected (Zone B)</p>
+          <div class="absolute bottom-0 left-0 h-1 bg-blue-500 w-full opacity-75"></div>
+        </div>
+
+        <!-- Waste -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 relative overflow-hidden">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-slate-400 text-xs font-medium uppercase tracking-wider">Waste Capacity</span>
+            <i class="fa-solid fa-trash-can text-emerald-400"></i>
+          </div>
+          <div class="flex items-end gap-2">
+            <h2 id="val_waste" class="text-3xl font-bold text-slate-100">65%</h2>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 mb-1">Nominal</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-2">Segregation Efficiency: 88%</p>
+          <div class="absolute bottom-0 left-0 h-1 bg-emerald-500 w-full opacity-75"></div>
+        </div>
+
+      </div>
+
+      <!-- Middle Section: AI Copilot & Digital Twin -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+        
+        <!-- AI Operations Copilot -->
+        <div class="xl:col-span-1 bg-slate-900/80 border border-slate-800 rounded-xl flex flex-col h-full">
+          <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2 text-slate-100 font-semibold">
+              <i class="fa-solid fa-microchip text-emerald-400"></i> AI Operations Copilot
+            </div>
+            <span class="text-[10px] uppercase tracking-wider text-slate-500 border border-slate-700 px-2 py-0.5 rounded">Live Analysis</span>
+          </div>
+          
+          <div class="p-4 flex-1 space-y-4 overflow-y-auto">
+            
+            <!-- Insight 1: Energy Anomaly -->
+            <div class="bg-slate-800/50 border-l-2 border-rose-500 rounded p-3">
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-xs font-bold text-rose-400 uppercase">Energy Anomaly Detected</span>
+                <span class="text-[10px] text-slate-500">2m ago</span>
+              </div>
+              <p class="text-sm text-slate-200 mb-2 leading-snug">Block C consumed 18% more energy than its baseline between 14:00-17:00.</p>
+              
+              <div class="bg-slate-950/50 rounded p-2 mb-3 space-y-1 text-xs">
+                <div class="flex justify-between"><span class="text-slate-400">Impact:</span> <span class="text-rose-400 font-medium">₹4,200/mo excess cost</span></div>
+                <div class="flex justify-between"><span class="text-slate-400">Benefit:</span> <span class="text-emerald-400 font-medium">~12% HVAC reduction</span></div>
+              </div>
+              
+              <p class="text-xs text-slate-400 mb-3"><strong class="text-slate-300">Action:</strong> Inspect HVAC operation and cooling load in Block C.</p>
+              
+              <div class="flex gap-2">
+                <button onclick="actionToast('Work order created for Block C HVAC')" class="flex-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs py-1.5 rounded transition">Create Action</button>
+                <button onclick="actionToast('Opening Block C analytics panel')" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs py-1.5 rounded transition">Investigate</button>
+              </div>
+            </div>
+
+            <!-- Insight 2: Predictive Waste -->
+            <div class="bg-slate-800/50 border-l-2 border-amber-500 rounded p-3">
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-xs font-bold text-amber-400 uppercase">AI Forecast: Logistics</span>
+                <span class="text-[10px] text-slate-500">15m ago</span>
+              </div>
+              <p class="text-sm text-slate-200 mb-2 leading-snug">Cafeteria Zone bins predicted to reach 100% capacity in 1.5 hours.</p>
+              
+              <p class="text-xs text-slate-400 mb-3"><strong class="text-slate-300">Action:</strong> Re-route collection vehicle from North Gate to Cafeteria immediately.</p>
+              
+              <button onclick="actionToast('Collection route optimized automatically')" class="w-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs py-1.5 rounded transition">Auto Re-route Team</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Digital Twin Map -->
+        <div class="xl:col-span-2 bg-slate-900/80 border border-slate-800 rounded-xl flex flex-col relative overflow-hidden min-h-[400px]">
+          <div class="p-4 border-b border-slate-800 flex items-center justify-between relative z-10 bg-slate-900/90">
+            <h3 class="font-semibold text-slate-100 flex items-center gap-2"><i class="fa-solid fa-map"></i> Facility Digital Twin / Live Operations</h3>
+            <div class="flex gap-2 text-xs">
+              <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-emerald-500"></span> Safe</span>
+              <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-amber-500"></span> Warn</span>
+              <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-rose-500"></span> Alert</span>
+            </div>
+          </div>
+          
+          <!-- CSS Styled Map Schematic -->
+          <div class="flex-1 bg-[#0f172a] relative p-8 flex items-center justify-center">
+            <!-- Road Network -->
+            <div class="absolute inset-0 opacity-20" style="background-image: linear-gradient(#334155 2px, transparent 2px), linear-gradient(90deg, #334155 2px, transparent 2px); background-size: 40px 40px;"></div>
+            
+            <div class="relative w-full max-w-2xl aspect-video border-4 border-slate-800 rounded-3xl bg-slate-950 p-4 shadow-2xl">
+              
+              <!-- Block A (Admin) -->
+              <div onclick="mapClick('Block A (Admin)', 'All systems nominal.')" class="absolute top-[10%] left-[10%] w-32 h-24 bg-slate-800 border-2 border-slate-600 rounded cursor-pointer hover:border-emerald-400 transition flex items-center justify-center text-xs font-bold text-slate-500 hover:text-emerald-400 group">
+                BLOCK A
+                <div class="absolute -top-2 -right-2 h-4 w-4 bg-emerald-500 rounded-full border-2 border-slate-900 shadow-[0_0_10px_#10b981] pulse-dot"></div>
+              </div>
+
+              <!-- Block B (Labs/Water Anomaly) -->
+              <div onclick="mapClick('Block B (Labs)', 'WARNING: Water flow anomaly. Flow rate 27% above baseline.')" class="absolute top-[20%] right-[15%] w-40 h-32 bg-slate-800 border-2 border-slate-600 rounded cursor-pointer hover:border-rose-400 transition flex items-center justify-center text-xs font-bold text-slate-500 hover:text-rose-400">
+                BLOCK B (LABS)
+                <div class="absolute -top-2 -right-2 h-4 w-4 bg-rose-500 rounded-full border-2 border-slate-900 shadow-[0_0_10px_#f43f5e] pulse-dot"></div>
+                <!-- Mini Alert Popup -->
+                <div class="absolute -top-10 right-0 bg-rose-950 text-rose-200 border border-rose-800 text-[10px] px-2 py-1 rounded shadow-lg whitespace-nowrap pointer-events-none">
+                  Water Alert!
+                </div>
+              </div>
+
+              <!-- Block C (HVAC Anomaly) -->
+              <div onclick="mapClick('Block C', 'WARNING: High energy draw. HVAC load anomalous.')" class="absolute bottom-[15%] left-[25%] w-48 h-20 bg-slate-800 border-2 border-slate-600 rounded cursor-pointer hover:border-amber-400 transition flex items-center justify-center text-xs font-bold text-slate-500 hover:text-amber-400">
+                BLOCK C
+                <div class="absolute -top-2 -right-2 h-4 w-4 bg-amber-500 rounded-full border-2 border-slate-900 shadow-[0_0_10px_#fbbf24] pulse-dot"></div>
+              </div>
+
+              <!-- Solar Array -->
+              <div onclick="mapClick('Solar Array', 'Generating 1.2 MWh.')" class="absolute bottom-[10%] right-[10%] w-32 h-16 bg-blue-900/30 border border-blue-700/50 rounded grid grid-cols-4 gap-1 p-1 cursor-pointer hover:bg-blue-900/50 transition">
+                <div class="bg-blue-600/40 rounded-sm"></div><div class="bg-blue-600/40 rounded-sm"></div><div class="bg-blue-600/40 rounded-sm"></div><div class="bg-blue-600/40 rounded-sm"></div>
+                <div class="bg-blue-600/40 rounded-sm"></div><div class="bg-blue-600/40 rounded-sm"></div><div class="bg-blue-600/40 rounded-sm"></div><div class="bg-blue-600/40 rounded-sm"></div>
+              </div>
+
+              <!-- Traffic Gate -->
+              <div class="absolute bottom-0 left-[50%] -translate-x-1/2 translate-y-1/2 w-16 h-8 bg-slate-700 border-2 border-purple-500 rounded flex items-center justify-center">
+                <i class="fa-solid fa-car text-purple-400 text-xs"></i>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lower Section: Charts, What-If, Sustainability Score -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Interactive Chart -->
+        <div class="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-xl p-4">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-semibold text-sm">Energy vs Carbon Emissions Trend</h3>
+            <select class="bg-slate-800 border border-slate-700 text-xs rounded px-2 py-1 text-slate-300 outline-none">
+              <option>Last 24 Hours</option>
+              <option>7 Days</option>
+              <option>30 Days</option>
+            </select>
+          </div>
+          <div class="h-64 w-full relative">
+            <canvas id="mainChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Sustainability Score & What-If Simulator -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl flex flex-col">
+          <!-- Score -->
+          <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+            <div>
+              <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Facility Sustainability Score</h3>
+              <div class="flex items-end gap-2">
+                <span id="sust_score" class="text-4xl font-bold text-emerald-400">82</span>
+                <span class="text-slate-500 font-medium pb-1">/ 100</span>
+              </div>
+            </div>
+            <!-- Simple CSS Donut Chart -->
+            <div class="relative w-16 h-16 rounded-full flex items-center justify-center" style="background: conic-gradient(#10b981 82%, #1e293b 0);">
+              <div class="absolute w-12 h-12 bg-slate-900 rounded-full"></div>
+              <i class="fa-solid fa-leaf text-emerald-500 relative z-10 text-xl"></i>
+            </div>
+          </div>
+
+          <!-- What-If Simulator -->
+          <div class="p-5 flex-1 bg-slate-800/20">
+            <div class="flex items-center gap-2 mb-4">
+              <i class="fa-solid fa-sliders text-blue-400"></i>
+              <h3 class="font-semibold text-sm text-slate-100">What-If Impact Simulator</h3>
+            </div>
+            
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-400">Target HVAC Reduction</span>
+                  <span id="slider_val_hvac" class="text-blue-400 font-bold">10%</span>
+                </div>
+                <input type="range" id="sim_hvac" min="0" max="30" value="10" oninput="runSimulation()">
+              </div>
+              
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-400">Increase Renewable Mix</span>
+                  <span id="slider_val_solar" class="text-emerald-400 font-bold">15%</span>
+                </div>
+                <input type="range" id="sim_solar" min="0" max="50" value="15" oninput="runSimulation()">
+              </div>
+
+              <!-- Simulation Results -->
+              <div class="bg-slate-950 rounded border border-slate-800 p-3 mt-4 space-y-2">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-slate-400">Est. Energy Saved:</span>
+                  <span id="res_energy" class="font-medium text-slate-200">1.28 MWh/day</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-slate-400">CO₂ Reduction:</span>
+                  <span id="res_co2" class="font-medium text-emerald-400">0.54 tCO₂e</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-slate-400">Cost Savings:</span>
+                  <span id="res_cost" class="font-medium text-blue-400">₹8,450/day</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // --- Chart Initialization ---
+    let myChart;
+    function initChart() {
+      const ctx = document.getElementById('mainChart').getContext('2d');
+      Chart.defaults.color = '#64748b';
+      Chart.defaults.font.family = 'Inter';
+      
+      myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['00:00', '04:00', '08:00', '12:00', '14:00 (Anomaly)', '16:00', '20:00'],
+          datasets: [
+            {
+              label: 'Energy (MWh)',
+              data: [8.2, 7.5, 12.1, 14.5, 18.2, 16.0, 11.2],
+              borderColor: '#0ea5e9',
+              backgroundColor: 'rgba(14, 165, 233, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.4,
+              yAxisID: 'y'
+            },
+            {
+              label: 'CO₂ Emissions (tCO₂e)',
+              data: [4.1, 3.8, 6.0, 7.2, 9.1, 8.0, 5.6],
+              borderColor: '#10b981',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              fill: false,
+              tension: 0.4,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: { legend: { position: 'top', labels: { boxWidth: 12, usePointStyle: true } } },
+          scales: {
+            x: { grid: { color: '#1e293b' } },
+            y: { type: 'linear', display: true, position: 'left', grid: { color: '#1e293b' }, title: { display: true, text: 'Energy (MWh)' } },
+            y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Carbon (tCO₂e)' } }
+          }
+        }
+      });
+    }
+
+    // --- Interactive Logic ---
+    function actionToast(message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'bg-slate-800 border border-slate-700 shadow-xl rounded px-4 py-3 text-sm text-white flex items-center gap-3 transform transition-all duration-300 translate-y-10 opacity-0';
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> ${message}`;
+      
+      container.appendChild(toast);
+      
+      // Animate in
+      setTimeout(() => { toast.classList.remove('translate-y-10', 'opacity-0'); }, 10);
+      // Remove after 3s
+      setTimeout(() => {
+        toast.classList.add('opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function mapClick(zone, detail) {
+      actionToast(`Viewing ${zone} Data: ${detail}`);
+    }
+
+    function generateReport() {
+      actionToast("Generating AI Executive Summary (PDF)...");
+    }
+
+    // --- Facility Simulator Data ---
+    const facilityData = {
+      smart_campus: { aqi: 118, pm: 42, energy: 12.8, water: 42.5, waste: '65%', score: 82 },
+      hospital: { aqi: 85, pm: 24, energy: 24.2, water: 86.0, waste: '88%', score: 94 },
+      industrial: { aqi: 165, pm: 88, energy: 45.6, water: 120.4, waste: '72%', score: 68 }
+    };
+
+    function changeFacility() {
+      const val = document.getElementById('facilitySelect').value;
+      const data = facilityData[val];
+      
+      // Animate numbers
+      document.getElementById('val_aqi').innerText = data.aqi;
+      document.getElementById('val_pm25').innerText = data.pm;
+      document.getElementById('val_energy').innerText = data.energy;
+      document.getElementById('val_water').innerText = data.water;
+      document.getElementById('val_waste').innerText = data.waste;
+      document.getElementById('sust_score').innerText = data.score;
+      
+      actionToast(`Switched data feed to ${document.getElementById('facilitySelect').options[document.getElementById('facilitySelect').selectedIndex].text}`);
+    }
+
+    // --- What-If Simulator ---
+    function runSimulation() {
+      const hvac = parseInt(document.getElementById('sim_hvac').value);
+      const solar = parseInt(document.getElementById('sim_solar').value);
+      
+      document.getElementById('slider_val_hvac').innerText = hvac + '%';
+      document.getElementById('slider_val_solar').innerText = solar + '%';
+      
+      // Dummy calculations based on base facility logic
+      const baseEnergy = 12.8;
+      const savedMWh = (baseEnergy * (hvac / 100)) + (baseEnergy * (solar / 100) * 0.5);
+      const co2 = savedMWh * 0.42; // arbitrary conversion factor for demo
+      const cost = savedMWh * 6600; // arbitrary cost per MWh in INR
+      
+      document.getElementById('res_energy').innerText = savedMWh.toFixed(2) + ' MWh/day';
+      document.getElementById('res_co2').innerText = co2.toFixed(2) + ' tCO₂e';
+      document.getElementById('res_cost').innerText = '₹' + cost.toLocaleString('en-IN', {maximumFractionDigits: 0}) + '/day';
+    }
+
+    // --- Boot ---
+    window.onload = () => {
+      initChart();
+      runSimulation();
+    };
+  </script>
+</body>
+</html>
